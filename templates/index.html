@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>URL Shortener</title>
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background: linear-gradient(135deg, #6e8efb, #a777e3);
+            color: #ffffff;
+        }
+        .container {
+            background: #ffffff;
+            color: #333;
+            text-align: center;
+            padding: 30px;
+            border-radius: 16px;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+            max-width: 400px;
+            width: 90%;
+            animation: fadeIn 1s ease-out;
+        }
+        .container h1 {
+            font-size: 28px;
+            margin-bottom: 20px;
+            color: #4CAF50;
+        }
+        .url-input {
+            width: calc(100% - 20px);
+            padding: 12px;
+            margin-bottom: 15px;
+            border: 2px solid #4CAF50;
+            border-radius: 8px;
+            font-size: 16px;
+            outline: none;
+            transition: border-color 0.3s ease;
+        }
+        .url-input:focus {
+            border-color: #45a049;
+        }
+        .shorten-btn {
+            background: linear-gradient(135deg, #4CAF50, #45a049);
+            color: #ffffff;
+            padding: 12px 20px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            transition: background 0.3s ease, transform 0.2s;
+        }
+        .shorten-btn:hover {
+            background: linear-gradient(135deg, #45a049, #3e8b40);
+            transform: scale(1.05);
+        }
+        .short-url {
+            margin-top: 20px;
+            padding: 15px;
+            background: #f9f9f9;
+            border: 2px solid #ccc;
+            border-radius: 8px;
+        }
+        .short-url input {
+            width: calc(100% - 80px);
+            border: none;
+            background: transparent;
+            font-size: 16px;
+            color: #333;
+            outline: none;
+            padding: 5px;
+        }
+        .short-url input:focus {
+            outline: none;
+        }
+        .copy-btn {
+            padding: 8px 12px;
+            border: none;
+            background: #007BFF;
+            color: #ffffff;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: background 0.3s ease;
+        }
+        .copy-btn:hover {
+            background: #0056b3;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h1>Shorten Your URL</h1>
+    <form action="/" method="POST">
+        <input type="text" class="url-input" name="url" placeholder="Paste your URL here" required>
+        <button class="shorten-btn" type="submit">Shorten URL</button>
+    </form>
+    {{if .ShortenedURL}}
+    <div class="short-url">
+        <input type="text" id="shortUrl" value="{{.Host}}/{{.ShortenedURL}}" readonly>
+        <button class="copy-btn" onclick="copyToClipboard()">Copy</button>
+    </div>
+    {{end}}
+</div>
+<script>
+    function copyToClipboard() {
+        const shortUrl = document.getElementById("shortUrl");
+        shortUrl.select();
+        shortUrl.setSelectionRange(0, 99999); // For mobile devices
+        navigator.clipboard.writeText(shortUrl.value);
+    }
+</script>
+</body>
+</html>
