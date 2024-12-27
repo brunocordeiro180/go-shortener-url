@@ -1,13 +1,14 @@
 package main
 
 import (
-	"github.com/brunocordeiro180/go-url-shortener/db"
-	"github.com/brunocordeiro180/go-url-shortener/repository"
-	_ "github.com/mattn/go-sqlite3"
 	"html/template"
 	"log"
 	"net/http"
 	"sync"
+
+	"github.com/brunocordeiro180/go-url-shortener/db"
+	"github.com/brunocordeiro180/go-url-shortener/repository"
+	_ "github.com/mattn/go-sqlite3"
 )
 
 type PageData struct {
@@ -39,7 +40,11 @@ func main() {
 	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
 		if r.Method == http.MethodPost {
 			inputURL := r.FormValue("url")
+
+			mutex.RLock()
 			shortURL, err := repository.GetOrCreateUrl(myDb, inputURL)
+			mutex.RUnlock()
+
 			if err != nil {
 				http.Error(w, "Failed to shorten URL", http.StatusInternalServerError)
 				return
@@ -56,9 +61,7 @@ func main() {
 					log.Printf("Error executing template: %v", err)
 				}
 			} else {
-				mutex.RLock()
 				originalURL, exists := repository.GetUrlFromKey(myDb, key)
-				mutex.RUnlock()
 
 				if !exists {
 					http.NotFound(w, r)
